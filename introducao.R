@@ -1,40 +1,23 @@
-vetLetras = c("C","L","L","C","S","La","C","C","L","M","C","M","So","M", "L", "C", "C","M","C", "L")
+canela <- c(45.2, 45.3, 45.4, 45.7, 45.9, 46.1, 46.1, 46.2, 46.5, 46.6, 46.9, 47.9,
+            48.1, 48.1, 48.3, 48.5, 48.8, 48.8, 49.1, 49.2, 49.3, 49.7, 49.8, 49.9, 50.1, 50.2,
+            50.3, 50.4, 50.5, 50.5, 50.5, 50.6, 50.8, 51.0, 51.1, 51.4, 51.4, 51.6, 51.7, 51.9,
+            52.5, 52.7, 52.8, 53.0, 54.9, 55.0, 55.2, 55.3, 55.7, 55.7)
 
-tabela.vet = table(vet)
+df = matrix(0,8,3) 
+colnames(df) = c('FA', 'FR', 'FP')
 
-df = matrix(0, 5, 3)
+rownames(df) <- c('[44,33;46,08)', '[46,08;47,83)', '[47,83;49,58)','[49,58;51,33)', '[51,33;53,08)', '[53,08;54,83)', '[54,83;56,58)', 'Total')
+tab.canela <- table(cut(canela, breaks = c(44.33, 46.08, 47.83, 49.58, 51.33, 53.08, 54.83, 56.58)))
 
-colnames(df) = c("FA", "FR", "FP")
+df[1:7,1] = tab.canela
+df[8,1] = length(canela)
 
-rownames(df) = c("Cafe","Leite", "Milho", "Outros", "Total")
-
-df[1,1] = tabela.vet["C"]
-df[2,1] = tabela.vet["L"]
-df[3,1] = tabela.vet["M"]
-df[4,1] = sum(tabela.vet["La"],tabela.vet["So"], tabela.vet["S"])
-df[5,1] = sum(df[-5,1])
-
-for (i in 1:5){
-  df[i,2] = df[i, 1]/df[5,1]
-  df[i,3] = df[i,2] * 100
+for(i in 1:8){
+  df[i,2] = df[i,1]/length(canela)
+  df[i,3] = df[i,2]*100
 }
 
-matrizQtdFilhos = matrix(0,6,3)
-teste = matrix(1,6,3)
-colnames(matrizQtdFilhos) = c("FA", "FR", "%")
-rownames(matrizQtdFilhos) = c("0","1","2","3","4", "Total")
-
-
-matrizQtdFilhos[1,1] = 3
-matrizQtdFilhos[2,1] = 10
-matrizQtdFilhos[3,1] = 9
-matrizQtdFilhos[4,1] = 11
-matrizQtdFilhos[5,1] = 7
-matrizQtdFilhos[6,1] = sum(matrizQtdFilhos[-6,1])
-
-for(i in 1:6){
-  matrizQtdFilhos[i,2] = matrizQtdFilhos[i,1]/matrizQtdFilhos[6,1]
-  matrizQtdFilhos[i,3] = matrizQtdFilhos[i,2] * 100
-}
-
-graficoQtdFilhos = pie(matrizQtdFilhos[1:5,1], col = rainbow(5), radius=1)
+h <- hist(canela, breaks=c(44.33, 46.08, 47.83, 49.58, 51.33, 53.08, 56.58),
+          freq=FALSE, ylab="Dfr", xlab="Canela_em_pó (g)", main="",
+          col=topo.colors(6))
+points(h$mids, h$density, "l", lwd=2)
