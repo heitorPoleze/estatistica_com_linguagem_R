@@ -429,7 +429,7 @@ RESULTADOS_2024 <- data.table::fread(input='RESULTADOS_2024.csv',
 #                                               'Texto insuficiente',
 #                                               'Parte desconectada'))
 
-
+# 
 library(tidyverse)
 library(nycflights13)
 
