@@ -431,8 +431,36 @@ RESULTADOS_2024 <- data.table::fread(input='RESULTADOS_2024.csv',
 
 # 
 library(tidyverse)
-library(nycflights13)
 
 centro_oeste = c("MT", "MS", "GO", "DF")
 
 df_centro_oeste = RESULTADOS_2024 %>% filter(SG_UF_PROVA %in% centro_oeste)
+
+calcular_estatistica_por_estado <- function(df,estatistica) {
+  df %>%
+    group_by(SG_UF_PROVA) %>% #
+    summarise(
+      Natureza = estatistica(NU_NOTA_CN, na.rm = TRUE),
+      Humanas = estatistica(NU_NOTA_CH, na.rm = TRUE),
+      Linguagem = estatistica(NU_NOTA_LC, na.rm = TRUE),
+      Matematica = estatistica(NU_NOTA_MT, na.rm = TRUE),
+      Redacao = estatistica(NU_NOTA_REDACAO, na.rm = TRUE),
+      Geral = estatistica((NU_NOTA_CN + NU_NOTA_CH + NU_NOTA_LC + NU_NOTA_MT + NU_NOTA_REDACAO)/5, na.rm = TRUE)
+    )
+}
+
+cat("--- MÉDIAS DO CENTRO-OESTE --- \n")
+medias_centro_oeste = calcular_estatistica_por_estado(df_centro_oeste, mean)
+print(medias_centro_oeste)
+
+cat("\n--- MEDIANAS DO CENTRO-OESTE --- \n")
+medianas_centro_oeste = calcular_estatistica_por_estado(df_centro_oeste, median)
+print(medianas_centro_oeste)
+
+cat("\n--- DESVIO PADRÃO DO CENTRO-OESTE --- \n")
+desvio_padrao_co = calcular_estatistica_por_estado(df_centro_oeste, sd)
+print(desvio_padrao_co)
+
+cat("\n--- NOTAS MÁXIMAS DO CENTRO-OESTE --- \n")
+max_co = calcular_estatistica_por_estado(df_centro_oeste, max)
+print(max_co)
