@@ -508,7 +508,12 @@ qtd_participantes_geral <- porcentagem_por_sexo %>%
 
 porcentagem_com_total_geral <- bind_rows(porcentagem_por_sexo, qtd_participantes_geral)
 
-estatistica_final = medias_centro_oeste %>% 
+media_final = medias_centro_oeste %>% 
   left_join(porcentagem_com_total_geral %>% select(UF, Homens, Mulheres, Total), by = c("SG_UF_PROVA" = "UF"))
+names(media_final)[1] <- "UF"
 
-names(estatistica_final)[1] <- "UF"
+mediana_final = medianas_centro_oeste %>% left_join(porcentagem_com_total_geral %>% select(UF, Homens, Mulheres, Total), by = c("SG_UF_PROVA" = "UF"))
+names(mediana_final)[1] = "UF"
+
+desvio_padrao_final = desvio_padrao_co %>% left_join(porcentagem_com_total_geral %>% select(UF, Homens, Mulheres, Total), by = c("SG_UF_PROVA" = "UF"))
+names(desvio_padrao_final)[1] = "UF"
