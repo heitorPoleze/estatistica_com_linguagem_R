@@ -428,3 +428,11 @@ RESULTADOS_2024 <- data.table::fread(input='RESULTADOS_2024.csv',
 #                                               'N?o atendimento ao tipo textual',
 #                                               'Texto insuficiente',
 #                                               'Parte desconectada'))
+
+# 
+library(tidyverse)
+library(nycflights13)
+
+centro_oeste = c("MT", "MS", "GO", "DF")
+
+df_centro_oeste = RESULTADOS_2024 %>% filter(SG_UF_PROVA %in% centro_oeste)
