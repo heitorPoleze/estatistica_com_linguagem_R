@@ -464,3 +464,51 @@ print(desvio_padrao_co)
 cat("\n--- NOTAS MÁXIMAS DO CENTRO-OESTE --- \n")
 max_co = calcular_estatistica_por_estado(df_centro_oeste, max)
 print(max_co)
+
+
+participantes_centro_oeste = PARTICIPANTES_2024 %>%
+  filter(SG_UF_PROVA %in% centro_oeste)
+
+qtd_participantes_por_sexo = participantes_centro_oeste %>%   
+  group_by(SG_UF_PROVA, TP_SEXO) %>%
+  summarise(
+    N = n(),
+    .groups = 'drop'
+  ) %>%
+  pivot_wider(
+    names_from = TP_SEXO,
+    values_from = N,
+    values_fill = 0
+  )
+
+porcentagem_por_sexo = qtd_participantes_por_sexo %>%
+  mutate(
+    Total = M + F,
+    Percentual_Homens = round(M / Total * 100, 1),
+    Percentual_Mulheres = round(F / Total * 100, 1)
+  ) %>%
+  rename(UF = SG_UF_PROVA, Homens = M, Mulheres = F)
+
+
+qtd_participantes_geral <- porcentagem_por_sexo %>%
+  summarise(
+    # Soma as contagens absolutas
+    Mulheres = sum(Mulheres),
+    Homens = sum(Homens),
+    Total = sum(Total)
+  ) %>%
+  mutate(
+    UF = "Total Geral", 
+    
+    Percentual_Homens = round(Homens / Total * 100, 1),
+    Percentual_Mulheres = round(Mulheres / Total * 100, 1)
+  ) %>%
+  
+  select(UF, Mulheres, Homens, Total, Percentual_Homens, Percentual_Mulheres)
+
+porcentagem_com_total_geral <- bind_rows(porcentagem_por_sexo, qtd_participantes_geral)
+
+estatistica_final = medias_centro_oeste %>% 
+  left_join(porcentagem_com_total_geral %>% select(UF, Homens, Mulheres, Total), by = c("SG_UF_PROVA" = "UF"))
+
+names(estatistica_final)[1] <- "UF"
